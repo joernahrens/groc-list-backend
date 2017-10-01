@@ -1,6 +1,7 @@
 'use strict';
 
 import {DeltaSnapshot} from 'firebase-functions/lib/providers/database';
+import {Event} from 'firebase-functions';
 
 const functions = require('firebase-functions');
 const fbAdmin = require('firebase-admin');
@@ -14,7 +15,7 @@ fbAdmin.initializeApp(functions.config().firebase);
 // });
 
 exports.onNewInvite = functions.database.ref('/lists/{authId}/{listId}/invites/{inviteId}')
-    .onWrite((snapshot: DeltaSnapshot) => {
-        const email: string = snapshot.val().email;
+    .onWrite((event: Event<DeltaSnapshot>) => {
+        const email: string = event.data.val().email;
         console.log('new invite: ' + email);
     });
