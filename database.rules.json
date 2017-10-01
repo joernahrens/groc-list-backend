@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "lists": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "listItems": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid",
+        "$listId": {
+          ".read": "root.child('lists').child($uid).child($listId).child('fellows').val().contains(auth.token.email)",
+          ".write": "root.child('lists').child($uid).child($listId).child('fellows').val().contains(auth.token.email)"
+        }
+      }
+    },
+    "autoComplete": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "shared": {
+      "$mail": {
+        ".read": "$mail === auth.token.email.replace('.', ',')",
+        ".write": "auth != null"
+      }
+    }
+  }
+}
