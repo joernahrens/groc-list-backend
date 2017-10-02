@@ -1,9 +1,8 @@
 'use strict';
 
+import DataSnapshot = admin.database.DataSnapshot;
 import {DeltaSnapshot} from 'firebase-functions/lib/providers/database';
 import {Event} from 'firebase-functions';
-import UserRecord = admin.auth.UserRecord;
-import DataSnapshot = admin.database.DataSnapshot;
 
 const functions = require('firebase-functions');
 const fbAdmin = require('firebase-admin');
@@ -15,10 +14,12 @@ exports.onNewInvite = functions.database.ref('/lists/{authId}/{listId}/invites/{
         const listId: string = event.params!!.listId;
         const authId: string = event.params!!.authId;
 
-        return fbAdmin.auth().getUser(authId)
-            .then((owner: UserRecord) => {
+        return Promise.all(
+            [fbAdmin.auth().getUser(authId),
+                event.data.ref.parent!!.parent!!.child('name').once('value')])
+            .then((args: Array<any>) => {
                 fbAdmin.database().ref('/shared/' + email.replace('.', ','))
-                    .push({list: listId, owner: authId, ownerMail: owner.email});
+                    .push({list: listId, owner: authId, ownerMail: args[0].email, name: args[1].val()});
             })
             .then(() => {
                 event.data.adminRef.parent!!.parent!!.child('fellows').once('value')
