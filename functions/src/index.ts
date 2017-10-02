@@ -10,6 +10,11 @@ fbAdmin.initializeApp(functions.config().firebase);
 
 exports.onNewInvite = functions.database.ref('/lists/{authId}/{listId}/invites/{inviteId}')
     .onWrite((event: Event<DeltaSnapshot>) => {
+        // ignore deletion
+        if (!event.data.exists()) {
+            return;
+        }
+
         const email: string = event.data.val().email;
         const listId: string = event.params!!.listId;
         const authId: string = event.params!!.authId;
