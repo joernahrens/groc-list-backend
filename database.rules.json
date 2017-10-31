@@ -27,6 +27,12 @@
         ".read": "$mail === auth.token.email.replace('.', ',')",
         ".write": "auth != null"
       }
+    },
+    "user": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
     }
   }
 }
