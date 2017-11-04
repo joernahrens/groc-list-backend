@@ -23,7 +23,7 @@ exports.onNewInvite = functions.database.ref('/lists/{authId}/{listId}/invites/{
             [fbAdmin.auth().getUser(authId),
                 event.data.ref.parent!!.parent!!.child('name').once('value')])
             .then((args: Array<any>) => {
-                fbAdmin.database().ref('/shared/' + email.replace(/./g, ','))
+                fbAdmin.database().ref('/shared/' + email.replace(/\./g, ','))
                     .push({list: listId, owner: authId, ownerMail: args[0].email, name: args[1].val()});
             })
             .then(() => {
