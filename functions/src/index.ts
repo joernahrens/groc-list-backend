@@ -2,11 +2,11 @@
 
 import DataSnapshot = admin.database.DataSnapshot;
 import {DeltaSnapshot} from 'firebase-functions/lib/providers/database';
+import * as functions from 'firebase-functions';
 import {Event} from 'firebase-functions';
+import * as admin from "firebase-admin";
 
-const functions = require('firebase-functions');
-const fbAdmin = require('firebase-admin');
-fbAdmin.initializeApp(functions.config().firebase);
+admin.initializeApp(functions.config().firebase);
 
 exports.onNewInvite = functions.database.ref('/lists/{authId}/{listId}/invites/{inviteId}')
     .onWrite((event: Event<DeltaSnapshot>) => {
@@ -20,10 +20,10 @@ exports.onNewInvite = functions.database.ref('/lists/{authId}/{listId}/invites/{
         const authId: string = event.params!!.authId;
 
         return Promise.all(
-            [fbAdmin.auth().getUser(authId),
+            [admin.auth().getUser(authId),
                 event.data.ref.parent!!.parent!!.child('name').once('value')])
             .then((args: Array<any>) => {
-                fbAdmin.database().ref('/shared/' + email.replace(/\./g, ','))
+                admin.database().ref('/shared/' + email.replace(/\./g, ','))
                     .push({list: listId, owner: authId, ownerMail: args[0].email, name: args[1].val()});
             })
             .then(() => {
