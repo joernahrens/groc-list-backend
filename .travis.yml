@@ -12,7 +12,7 @@ deploy:
   script: "./deploy.sh"
   skip_cleanup: true
   on:
-    repo: jayearn/groc-list-backend
+    repo: joernahrens/groc-list-backend
     branch: master
 
 notifications:
