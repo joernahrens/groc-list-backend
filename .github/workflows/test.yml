@@ -17,6 +17,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: pushd functions && npm install && npm run build && popd
-      - run: ./deploy.sh
         env:
           CI: true
