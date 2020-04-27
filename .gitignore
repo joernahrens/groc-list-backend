@@ -3,3 +3,4 @@ node_modules/
 .idea/workspace.xml
 
 /functions/*.js
+/.idea/checkstyle-idea.xml

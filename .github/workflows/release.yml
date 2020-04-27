@@ -1,0 +1,34 @@
+name: Release cloud functions
+
+on:
+  push:
+    branches:
+      - 'master'
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 5 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 10.16.0
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.16.0
+      - name: Build and deploy
+        env:
+          CI: true
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          pushd functions && npm install && npm run build && popd
+          ./deploy.sh
+      - name: Slack notification
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: general # Optional. (defaults to webhook)
+        uses: Ilshidur/action-slack@master
+        with:
+          args: 'groc-list-backend cloud function published.'
