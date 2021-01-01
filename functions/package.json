@@ -1,21 +1,26 @@
 {
   "name": "functions",
-  "description": "Cloud Functions for Firebase",
-  "dependencies": {
-    "@types/es6-promise": "0.0.33",
-    "firebase-admin": "^8.3.0",
-    "firebase-functions": "^3.2.0"
-  },
-  "devDependencies": {
-    "typescript": "^3.5.3"
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "12"
   },
-  "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "watch": "tsc --project tsconfig.json --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^8.6.0",
+    "firebase-functions": "^3.3.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^0.1.6",
+    "tslint": "^5.12.0",
+    "typescript": "^3.8.0"
   },
   "private": true
 }

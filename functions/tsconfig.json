@@ -1,23 +1,16 @@
 {
   "compilerOptions": {
-    "allowJs": false,
-    "alwaysStrict": true,
-    "outDir": "./",
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "target": "es5"
+    "module": "commonjs",
+//    "noImplicitReturns": true,
+//    "noUnusedLocals": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": false,
+    "alwaysStrict": false,
+    "target": "es2017"
   },
-  "typeAcquisition": {
-    "include": []
-  },
+  "compileOnSave": true,
   "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "files": [
-    "node_modules/firebase-functions/lib/cloud-functions.d.ts",
-    "node_modules/firebase-admin/lib/index.d.ts"
+    "src"
   ]
 }

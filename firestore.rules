@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{email} {
+      allow read, write: if request.auth != null && request.auth.token.email == email;
+    }
+    match /users/{email}/autoComplete/{item} {
+      allow read, write: if request.auth != null && (request.auth.token.email == email || exists(/databases/$(database)/documents/users/$(email)/lists/$(list)/shares/$(request.auth.token.email)));
+    }
+    match /users/{email}/lists/{list}/shares/{item} {
+      allow read, write: if request.auth != null && request.auth.token.email == email;
+    }
+    match /users/{email}/sharedLists/{list} {
+      allow read, write: if request.auth != null && request.auth.token.email == email;
+    }
+    match /users/{email}/lists/{list} {
+      allow read, write: if request.auth != null && (request.auth.token.email == email || exists(/databases/$(database)/documents/users/$(email)/lists/$(list)/shares/$(request.auth.token.email)));
+    }
+  }
+}
