@@ -56,10 +56,10 @@ exports.onNewInviteFirestore = functions.firestore.document('users/{email}/lists
             change.ref.parent.parent.parent.parent.get()]
         )
             .then((args: Array<admin.firestore.DocumentSnapshot<DocumentData>>) => {
-                return admin.firestore().doc(`users/${mailAddress}/sharedLists/${args[1].id}/shares/${args[0].id}`)
+                return admin.firestore().doc(`users/${mailAddress}/sharedLists/${args[1].id}-${args[0].id}`)
                     .set({
-                        listOwner: mailAddress,
-                        shared: true
+                        listOwner: args[1].id,
+                        listName: args[0].id
                     })
             })
             .then(() => {
