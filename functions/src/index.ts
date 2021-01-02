@@ -45,10 +45,6 @@ exports.onNewInvite = functions.database.ref('/lists/{authId}/{listId}/invites/{
 
 exports.onNewInviteFirestore = functions.firestore.document('users/{email}/lists/{list}/shares/{share}')
     .onCreate((change, context) => {
-        // if (!change.after.exists) {
-        //     return;
-        // }
-
         const mailAddress = change.id;
         console.log("Mail address: " + mailAddress);
 
@@ -56,7 +52,7 @@ exports.onNewInviteFirestore = functions.firestore.document('users/{email}/lists
             change.ref.parent.parent.parent.parent.get()]
         )
             .then((args: Array<admin.firestore.DocumentSnapshot<DocumentData>>) => {
-                return admin.firestore().doc(`users/${mailAddress}/sharedLists/${args[1].id}-${args[0].id}`)
+                return admin.firestore().doc(`users/${mailAddress}/sharedLists/${args[1].id}🤓${args[0].id}`)
                     .set({
                         listOwner: args[1].id,
                         listName: args[0].id
@@ -70,3 +66,30 @@ exports.onNewInviteFirestore = functions.firestore.document('users/{email}/lists
                 console.error(error);
             });
     });
+
+exports.onSharedListLeft = functions.firestore.document('users/{userMail}/sharedLists/{shareConcat}')
+    .onDelete((snapshot, context) => {
+        return Promise.all([ snapshot.ref.parent.parent.get()]
+        )
+            .then((args: Array<admin.firestore.DocumentSnapshot<DocumentData>>) => {
+                const userEmail = args[0].id
+                const share: String = snapshot.id
+                const listOwner = share.substring(0, share.indexOf("🤓"))
+                const listKey = share.substring(share.indexOf("🤓") + 2, share.length)
+
+                console.log(`List owner: ${listOwner}`)
+                console.log(`List key: ${listKey}`)
+                console.log(`User email: ${userEmail}`)
+
+                return admin.firestore().doc(`users/${listOwner}/lists/${listKey}/shares/${userEmail}`)
+                    .delete()
+            })
+            .then(() => {
+                console.log('All fine 👍');
+            })
+            .catch((error: any) => {
+                console.error('something went wrong:');
+                console.error(error);
+            });
+
+    })
