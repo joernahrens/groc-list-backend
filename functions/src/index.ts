@@ -91,5 +91,4 @@ exports.onSharedListLeft = functions.firestore.document('users/{userMail}/shared
                 console.error('something went wrong:');
                 console.error(error);
             });
-
     })
