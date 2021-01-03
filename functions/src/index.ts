@@ -73,3 +73,24 @@ exports.onSharedListLeft = functions.firestore.document('users/{userMail}/shared
                 console.error(error);
             });
     })
+
+exports.onListMemberDeleted = functions.firestore.document('users/{ownerMail}/lists/{list}/shares/{share}')
+    .onDelete((snapshot, context) => {
+        return Promise.all([snapshot.ref.parent.parent.parent.parent.get(), snapshot.ref.parent.parent.get(), snapshot.ref.get()]
+        )
+            .then((args: Array<admin.firestore.DocumentSnapshot<DocumentData>>) => {
+                const owner = args[0].id
+                const list = args[1].id
+                const user: String = args[2].id
+
+                return admin.firestore().doc(`users/${user}/sharedLists/${owner}🤓${list}`)
+                    .delete()
+            })
+            .then(() => {
+                console.log('All fine 👍');
+            })
+            .catch((error: any) => {
+                console.error('something went wrong:');
+                console.error(error);
+            });
+    })
